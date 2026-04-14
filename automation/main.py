@@ -274,19 +274,9 @@ if "html" in st.session_state:
     with tab3:
         st.code(html, language="html")
 
-    import base64 as _b64
-    b64_html = _b64.b64encode(html.encode("utf-8")).decode()
-    data_url = f"data:text/html;base64,{b64_html}"
-    st.markdown(
-        f'<a href="{data_url}" target="_blank" rel="noopener" '
-        f'style="display:inline-block;padding:8px 16px;background:#1a1a1a;color:#fff;'
-        f'text-decoration:none;border-radius:3px;font-size:13px;margin-right:8px;">'
-        f'🔗 새 탭에서 열기 (PNG/PDF 저장 권장)</a>',
-        unsafe_allow_html=True,
-    )
     st.download_button("HTML 다운로드",
                        data=html.encode("utf-8"),
                        file_name=f"sketch_report_{stamp}.html",
                        mime="text/html",
                        key="html_dl")
-    st.caption("📷 PNG / 📄 PDF 저장은 '새 탭에서 열기'로 연 뒤 우측 상단 버튼을 사용하세요. (전체 너비로 캡처되어 잘림이 없습니다)")
+    st.caption("📷 PNG / 📄 PDF 저장: 위 미리보기 우측 상단 버튼 사용. 잘림이 있으면 HTML을 다운로드해 브라우저에서 직접 열어 저장하세요.")
