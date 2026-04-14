@@ -14,6 +14,8 @@ TEMPLATE = Template(r"""<!DOCTYPE html>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Noto+Sans+KR:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -275,23 +277,50 @@ TEMPLATE = Template(r"""<!DOCTYPE html>
 <script>
 function _target() { return document.querySelector('.page'); }
 function _stamp() { const d = new Date(); return d.getFullYear() + ('0'+(d.getMonth()+1)).slice(-2) + ('0'+d.getDate()).slice(-2) + '_' + ('0'+d.getHours()).slice(-2) + ('0'+d.getMinutes()).slice(-2); }
-function downloadPNG() {
-  html2canvas(_target(), {scale: 2, useCORS: true, backgroundColor: '#f5f3ef'}).then(canvas => {
+async function _waitFonts() {
+  try { await document.fonts.ready; } catch(e) {}
+}
+async function downloadPNG() {
+  try {
+    await _waitFonts();
+    const el = _target();
+    const canvas = await html2canvas(el, {
+      scale: 2, useCORS: true, allowTaint: true,
+      backgroundColor: '#f5f3ef',
+      width: el.offsetWidth, height: el.offsetHeight,
+      windowWidth: el.offsetWidth, windowHeight: el.offsetHeight,
+    });
     const a = document.createElement('a');
     a.href = canvas.toDataURL('image/png');
     a.download = 'sketch_report_' + _stamp() + '.png';
-    a.click();
-  });
+    document.body.appendChild(a); a.click(); a.remove();
+  } catch (e) {
+    console.error(e);
+    alert('PNG 저장 실패: ' + (e && e.message ? e.message : e));
+  }
 }
-function downloadPDF() {
-  const opt = {
-    margin: 8,
-    filename: 'sketch_report_' + _stamp() + '.pdf',
-    image: { type: 'jpeg', quality: 0.98 },
-    html2canvas: { scale: 2, useCORS: true, backgroundColor: '#f5f3ef' },
-    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-  };
-  html2pdf().set(opt).from(_target()).save();
+async function downloadPDF() {
+  try {
+    await _waitFonts();
+    const el = _target();
+    const opt = {
+      margin: [6, 6, 6, 6],
+      filename: 'sketch_report_' + _stamp() + '.pdf',
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: {
+        scale: 2, useCORS: true, allowTaint: true,
+        backgroundColor: '#f5f3ef',
+        width: el.offsetWidth,
+        windowWidth: el.offsetWidth,
+      },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+      pagebreak: { mode: ['css', 'legacy'] }
+    };
+    await html2pdf().set(opt).from(el).save();
+  } catch (e) {
+    console.error(e);
+    alert('PDF 저장 실패: ' + (e && e.message ? e.message : e));
+  }
 }
 </script>
 <div class="page">
