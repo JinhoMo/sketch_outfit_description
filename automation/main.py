@@ -24,7 +24,6 @@ logger = logging.getLogger("sketch.main")
 
 from modules.ai_engine import GeminiEngine
 from modules.renderer import render_html
-from modules.exporter import html_to_png
 from modules.rate_limit import check_and_increment, peek
 
 ROOT = Path(__file__).parent.parent
@@ -220,7 +219,7 @@ if "html" in st.session_state:
         for i in range(n_slots):
             with lb_cols[i]:
                 if i < len(existing_lb):
-                    st.image(existing_lb[i], caption=f"LOOK {i+1}", use_container_width=True)
+                    st.image(existing_lb[i], caption=f"LOOK {i+1}", width="stretch")
                 else:
                     st.markdown(f"LOOK {i+1} (없음)")
                 p = st.text_area(f"추가 지시 (LOOK {i+1})", key=f"prompt_lb_{i}",
@@ -282,24 +281,9 @@ if "html" in st.session_state:
     with tab3:
         st.code(html, language="html")
 
-    c1, c2 = st.columns(2)
-    with c1:
-        st.download_button("HTML 다운로드",
-                           data=html.encode("utf-8"),
-                           file_name=f"sketch_report_{stamp}.html",
-                           mime="text/html",
-                           key="html_dl")
-    with c2:
-        if st.button("PNG 생성", key="png_btn"):
-            with st.spinner("PNG 렌더링 중…"):
-                try:
-                    st.session_state["png_bytes"] = html_to_png(html)
-                except Exception as e:
-                    logger.exception("png export failed")
-                    st.error(f"PNG 실패: {e}")
-        if "png_bytes" in st.session_state:
-            st.download_button("PNG 다운로드",
-                               data=st.session_state["png_bytes"],
-                               file_name=f"sketch_report_{stamp}.png",
-                               mime="image/png",
-                               key="png_dl")
+    st.download_button("HTML 다운로드",
+                       data=html.encode("utf-8"),
+                       file_name=f"sketch_report_{stamp}.html",
+                       mime="text/html",
+                       key="html_dl")
+    st.caption("📷 PNG / 📄 PDF 저장은 위 미리보기 우측 상단 버튼을 사용하세요. (브라우저에서 직접 렌더링)")

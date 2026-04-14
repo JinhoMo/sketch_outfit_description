@@ -85,19 +85,32 @@ class GeminiEngine:
             prompt = build_image_prompt(age, desired_keywords, look_index=look_index)
         t0 = time.time()
         logger.info("generate_styling_image -> %s", out_path.name)
-        response = self.client.models.generate_content(
-            model=IMAGE_MODEL,
-            contents=[prompt, before_image],
+        cfg = types.GenerateContentConfig(
+            http_options=types.HttpOptions(timeout=90_000),  # ms
         )
-        for part in response.candidates[0].content.parts:
-            if getattr(part, "inline_data", None) and part.inline_data.data:
-                img = Image.open(BytesIO(part.inline_data.data))
-                out_path.parent.mkdir(parents=True, exist_ok=True)
-                img.save(out_path)
-                logger.info("image saved %s in %.2fs", out_path, time.time() - t0)
-                return out_path
-        logger.warning("no image returned for %s", out_path.name)
-        return None
+        last_err = None
+        for attempt in range(2):
+            try:
+                response = self.client.models.generate_content(
+                    model=IMAGE_MODEL,
+                    contents=[prompt, before_image],
+                    config=cfg,
+                )
+                for part in response.candidates[0].content.parts:
+                    if getattr(part, "inline_data", None) and part.inline_data.data:
+                        img = Image.open(BytesIO(part.inline_data.data))
+                        out_path.parent.mkdir(parents=True, exist_ok=True)
+                        img.save(out_path)
+                        logger.info("image saved %s in %.2fs (attempt=%d)",
+                                    out_path, time.time() - t0, attempt + 1)
+                        return out_path
+                logger.warning("no image returned for %s (attempt=%d)", out_path.name, attempt + 1)
+                return None
+            except Exception as e:
+                last_err = e
+                logger.warning("image gen attempt %d failed (%.1fs): %s",
+                               attempt + 1, time.time() - t0, e)
+        raise last_err
 
     @staticmethod
     def _parse_json(text: str) -> dict:

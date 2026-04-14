@@ -14,6 +14,7 @@ TEMPLATE = Template(r"""<!DOCTYPE html>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Noto+Sans+KR:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -267,6 +268,32 @@ TEMPLATE = Template(r"""<!DOCTYPE html>
 </style>
 </head>
 <body>
+<div class="dl-bar" style="position:sticky;top:0;z-index:9999;background:#e8e4de;padding:8px 16px;border-bottom:1px solid #c8c2b8;display:flex;gap:8px;justify-content:flex-end;">
+  <button onclick="downloadPNG()" style="font-family:'Noto Sans KR',sans-serif;font-size:12px;padding:6px 14px;border:1px solid #1a1a1a;background:#fff;cursor:pointer;border-radius:2px;">📷 PNG 저장</button>
+  <button onclick="downloadPDF()" style="font-family:'Noto Sans KR',sans-serif;font-size:12px;padding:6px 14px;border:1px solid #1a1a1a;background:#1a1a1a;color:#fff;cursor:pointer;border-radius:2px;">📄 PDF 저장</button>
+</div>
+<script>
+function _target() { return document.querySelector('.page'); }
+function _stamp() { const d = new Date(); return d.getFullYear() + ('0'+(d.getMonth()+1)).slice(-2) + ('0'+d.getDate()).slice(-2) + '_' + ('0'+d.getHours()).slice(-2) + ('0'+d.getMinutes()).slice(-2); }
+function downloadPNG() {
+  html2canvas(_target(), {scale: 2, useCORS: true, backgroundColor: '#f5f3ef'}).then(canvas => {
+    const a = document.createElement('a');
+    a.href = canvas.toDataURL('image/png');
+    a.download = 'sketch_report_' + _stamp() + '.png';
+    a.click();
+  });
+}
+function downloadPDF() {
+  const opt = {
+    margin: 8,
+    filename: 'sketch_report_' + _stamp() + '.pdf',
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 2, useCORS: true, backgroundColor: '#f5f3ef' },
+    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+  };
+  html2pdf().set(opt).from(_target()).save();
+}
+</script>
 <div class="page">
 
   <!-- HEADER -->
