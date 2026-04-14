@@ -274,12 +274,26 @@ TEMPLATE = Template(r"""<!DOCTYPE html>
 </style>
 </head>
 <body>
-<div class="dl-bar" style="position:sticky;top:0;z-index:9999;background:#e8e4de;padding:8px 16px;border-bottom:1px solid #c8c2b8;display:flex;gap:8px;justify-content:flex-end;">
+<div class="dl-bar" style="position:sticky;top:0;z-index:9999;background:#e8e4de;padding:8px 16px;border-bottom:1px solid #c8c2b8;display:flex;gap:8px;justify-content:flex-start;">
+  <button onclick="openInNewTab()" style="font-family:'Noto Sans KR',sans-serif;font-size:12px;padding:6px 14px;border:1px solid #1a1a1a;background:#fff;cursor:pointer;border-radius:2px;">🔗 새 탭에서 열기</button>
   <button onclick="downloadPNG()" style="font-family:'Noto Sans KR',sans-serif;font-size:12px;padding:6px 14px;border:1px solid #1a1a1a;background:#fff;cursor:pointer;border-radius:2px;">📷 PNG 저장</button>
   <button onclick="downloadPDF()" style="font-family:'Noto Sans KR',sans-serif;font-size:12px;padding:6px 14px;border:1px solid #1a1a1a;background:#1a1a1a;color:#fff;cursor:pointer;border-radius:2px;">📄 PDF 저장</button>
 </div>
 <script>
 function _target() { return document.querySelector('.page'); }
+function openInNewTab() {
+  try {
+    const html = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+    const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const w = window.open(url, '_blank');
+    if (!w) { alert('팝업 차단 해제 후 다시 시도하세요.'); return; }
+    setTimeout(() => URL.revokeObjectURL(url), 60000);
+  } catch (e) {
+    console.error(e);
+    alert('새 탭 열기 실패: ' + (e && e.message ? e.message : e));
+  }
+}
 function _stamp() { const d = new Date(); return d.getFullYear() + ('0'+(d.getMonth()+1)).slice(-2) + ('0'+d.getDate()).slice(-2) + '_' + ('0'+d.getHours()).slice(-2) + ('0'+d.getMinutes()).slice(-2); }
 async function _waitFonts() {
   try { await document.fonts.ready; } catch(e) {}
