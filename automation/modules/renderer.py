@@ -110,6 +110,9 @@ TEMPLATE = Template(r"""<!DOCTYPE html>
     font-weight: 700;
     color: var(--dark);
     padding: 16px 24px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .sec-head.right { text-align: right; }
   .section-heading {
@@ -242,7 +245,7 @@ TEMPLATE = Template(r"""<!DOCTYPE html>
     color: #888;
     letter-spacing: 0.5px;
   }
-  .look-caption { font-size: 12px; color: var(--mid); line-height: 1.8; margin-top: 8px; }
+  .look-caption { font-size: 12px; color: var(--mid); line-height: 1.8; margin-top: 8px; margin-bottom: 10px; word-break: keep-all; overflow-wrap: anywhere; }
   .look-caption b { color: var(--dark); font-weight: 600; margin-right: 4px; font-family: 'Playfair Display', serif; font-size: 13px; }
 
   /* summary */
@@ -253,7 +256,8 @@ TEMPLATE = Template(r"""<!DOCTYPE html>
     color: var(--dark);
     margin-bottom: 10px;
   }
-  .summary-text { font-size: 12.5px; color: var(--mid); line-height: 2; }
+  .summary-text { font-size: 12.5px; color: var(--mid); line-height: 2; word-break: keep-all; overflow-wrap: anywhere; }
+  .info-row, .bullets li, .rec-list li, .palette-item { word-break: keep-all; overflow-wrap: anywhere; }
   .summary-text strong { color: var(--dark); font-weight: 500; }
 
   /* footer */
@@ -436,9 +440,10 @@ async function downloadPDF() {
   <!-- LOOKBOOK + SUMMARY -->
   <div class="grid-2 row-bt">
     <div class="cell br">
-      <div class="lookbook-photos">
+      {% set slot_n = (lookbook_b64|length) or (looks|length) or 1 %}
+      <div class="lookbook-photos" style="grid-template-columns: repeat({{ slot_n }}, 1fr);">
         {% for img in lookbook_b64 %}<img src="data:image/png;base64,{{ img }}">{% endfor %}
-        {% for _ in range(3 - lookbook_b64|length) %}<div class="photo-ph">LOOK {{ loop.index + lookbook_b64|length }}</div>{% endfor %}
+        {% if not lookbook_b64 %}{% for _ in looks %}<div class="photo-ph">LOOK {{ loop.index }}</div>{% endfor %}{% endif %}
       </div>
       {% for desc in looks %}
         <div class="look-caption"><b>LOOK {{ loop.index }}.</b>{{ desc }}</div>
