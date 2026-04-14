@@ -271,11 +271,19 @@ TEMPLATE = Template(r"""<!DOCTYPE html>
   }
 
   .right { text-align: right; }
+
+  @media print {
+    .dl-bar { display: none !important; }
+    body { background: #fff !important; padding: 0 !important; }
+    .page { box-shadow: none !important; width: 100% !important; }
+  }
 </style>
 </head>
 <body>
-<div class="dl-bar" style="position:sticky;top:0;z-index:9999;background:#e8e4de;padding:8px 16px;border-bottom:1px solid #c8c2b8;display:flex;gap:8px;justify-content:flex-start;">
-  <button onclick="openInNewTab()" style="font-family:'Noto Sans KR',sans-serif;font-size:12px;padding:6px 14px;border:1px solid #1a1a1a;background:#1a1a1a;color:#fff;cursor:pointer;border-radius:2px;">🔗 새 탭에서 열기</button>
+<div class="dl-bar" style="position:fixed;top:16px;right:16px;z-index:9999;background:rgba(255,255,255,0.95);padding:8px 10px;border:1px solid #c8c2b8;border-radius:6px;box-shadow:0 2px 12px rgba(0,0,0,0.15);display:flex;gap:6px;">
+  <button onclick="openInNewTab()" style="font-family:'Noto Sans KR',sans-serif;font-size:12px;padding:6px 12px;border:1px solid #1a1a1a;background:#fff;cursor:pointer;border-radius:2px;">🔗 새 탭</button>
+  <button onclick="downloadPNG()" style="font-family:'Noto Sans KR',sans-serif;font-size:12px;padding:6px 12px;border:1px solid #1a1a1a;background:#fff;cursor:pointer;border-radius:2px;">📷 PNG</button>
+  <button onclick="downloadPDF()" style="font-family:'Noto Sans KR',sans-serif;font-size:12px;padding:6px 12px;border:1px solid #1a1a1a;background:#1a1a1a;color:#fff;cursor:pointer;border-radius:2px;">📄 PDF</button>
 </div>
 <script>
 function _target() { return document.querySelector('.page'); }
