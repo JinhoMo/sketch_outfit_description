@@ -272,10 +272,21 @@ TEMPLATE = Template(r"""<!DOCTYPE html>
 
   .right { text-align: right; }
 
+  @page { size: A4 portrait; margin: 6mm; }
   @media print {
     .dl-bar { display: none !important; }
-    body { background: #fff !important; padding: 0 !important; }
-    .page { box-shadow: none !important; width: 100% !important; }
+    html, body { background: #fff !important; padding: 0 !important; margin: 0 !important; }
+    body { display: block !important; }
+    .page {
+      box-shadow: none !important;
+      width: 100% !important;
+      max-width: 100% !important;
+      padding: 8mm 10mm !important;
+    }
+    .brand { font-size: 56px !important; }
+    .tagline { font-size: 20px !important; }
+    .subtitle { font-size: 13px !important; }
+    .header { grid-template-columns: 1fr 210px !important; }
   }
 </style>
 </head>
