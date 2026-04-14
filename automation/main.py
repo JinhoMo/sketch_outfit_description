@@ -31,6 +31,32 @@ ROOT = Path(__file__).parent.parent
 GEN_DIR = ROOT / "generated_image"
 
 st.set_page_config(page_title="Sketch Identity Report", layout="wide")
+
+def _check_password() -> bool:
+    try:
+        expected = st.secrets.get("APP_PASSWORD")
+    except Exception:
+        expected = None
+    if not expected:
+        import os
+        expected = os.getenv("APP_PASSWORD")
+    if not expected:
+        return True  # no password configured → open access
+    if st.session_state.get("pw_ok"):
+        return True
+    st.title("🔒 Sketch Report")
+    pw = st.text_input("비밀번호", type="password")
+    if st.button("입장"):
+        if pw == expected:
+            st.session_state["pw_ok"] = True
+            st.rerun()
+        else:
+            st.error("비밀번호가 올바르지 않습니다.")
+    return False
+
+if not _check_password():
+    st.stop()
+
 st.title("Sketch. Identity Consulting Report 자동화")
 
 mode = st.radio("입력 모드", ["1) 전신샷 업로드", "2) 텍스트 폼만"], horizontal=True)
