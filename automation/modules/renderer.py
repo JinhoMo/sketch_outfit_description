@@ -275,9 +275,7 @@ TEMPLATE = Template(r"""<!DOCTYPE html>
 </head>
 <body>
 <div class="dl-bar" style="position:sticky;top:0;z-index:9999;background:#e8e4de;padding:8px 16px;border-bottom:1px solid #c8c2b8;display:flex;gap:8px;justify-content:flex-start;">
-  <button onclick="openInNewTab()" style="font-family:'Noto Sans KR',sans-serif;font-size:12px;padding:6px 14px;border:1px solid #1a1a1a;background:#fff;cursor:pointer;border-radius:2px;">🔗 새 탭에서 열기</button>
-  <button onclick="downloadPNG()" style="font-family:'Noto Sans KR',sans-serif;font-size:12px;padding:6px 14px;border:1px solid #1a1a1a;background:#fff;cursor:pointer;border-radius:2px;">📷 PNG 저장</button>
-  <button onclick="downloadPDF()" style="font-family:'Noto Sans KR',sans-serif;font-size:12px;padding:6px 14px;border:1px solid #1a1a1a;background:#1a1a1a;color:#fff;cursor:pointer;border-radius:2px;">📄 PDF 저장</button>
+  <button onclick="openInNewTab()" style="font-family:'Noto Sans KR',sans-serif;font-size:12px;padding:6px 14px;border:1px solid #1a1a1a;background:#1a1a1a;color:#fff;cursor:pointer;border-radius:2px;">🔗 새 탭에서 열기</button>
 </div>
 <script>
 function _target() { return document.querySelector('.page'); }
