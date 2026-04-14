@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+.python-version
+
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Generated / runtime data
+generated_image/
+automation/logs/
+automation/logs/*.json
+
+# Local assets (not needed in cloud)
+original_image/
+SUIT-Variable-ttf.zip
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
