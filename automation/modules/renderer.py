@@ -231,9 +231,10 @@ TEMPLATE = Template(r"""<!DOCTYPE html>
   }
   .lookbook-photos img {
     width: 100%;
-    aspect-ratio: 2/3;
-    object-fit: cover;
+    height: auto;
+    object-fit: contain;
     display: block;
+    background: #ece8e2;
   }
   .photo-ph {
     aspect-ratio: 2/3;
