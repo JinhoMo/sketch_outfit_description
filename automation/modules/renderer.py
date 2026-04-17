@@ -338,20 +338,32 @@ async function downloadPDF() {
   try {
     await _waitFonts();
     const el = _target();
-    const opt = {
-      margin: [6, 6, 6, 6],
-      filename: 'sketch_report_' + _stamp() + '.pdf',
-      image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: {
-        scale: 2, useCORS: true, allowTaint: true,
-        backgroundColor: '#f5f3ef',
-        width: el.offsetWidth,
-        windowWidth: el.offsetWidth,
-      },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-      pagebreak: { mode: ['css', 'legacy'] }
-    };
-    await html2pdf().set(opt).from(el).save();
+    const canvas = await html2canvas(el, {
+      scale: 2, useCORS: true, allowTaint: true,
+      backgroundColor: '#f5f3ef',
+      width: el.offsetWidth, height: el.offsetHeight,
+      windowWidth: el.offsetWidth, windowHeight: el.offsetHeight,
+    });
+    const imgData = canvas.toDataURL('image/jpeg', 0.95);
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+    const pageW = pdf.internal.pageSize.getWidth();
+    const pageH = pdf.internal.pageSize.getHeight();
+    const margin = 6;
+    const imgW = pageW - margin * 2;
+    const imgH = canvas.height * imgW / canvas.width;
+    const usableH = pageH - margin * 2;
+    let heightLeft = imgH;
+    let position = margin;
+    pdf.addImage(imgData, 'JPEG', margin, position, imgW, imgH);
+    heightLeft -= usableH;
+    while (heightLeft > 0) {
+      position = margin - (imgH - heightLeft);
+      pdf.addPage();
+      pdf.addImage(imgData, 'JPEG', margin, position, imgW, imgH);
+      heightLeft -= usableH;
+    }
+    pdf.save('sketch_report_' + _stamp() + '.pdf');
   } catch (e) {
     console.error(e);
     alert('PDF 저장 실패: ' + (e && e.message ? e.message : e));
