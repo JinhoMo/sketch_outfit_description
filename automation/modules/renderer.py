@@ -98,6 +98,7 @@ TEMPLATE = Template(r"""<!DOCTYPE html>
     display: grid;
     grid-template-columns: 1fr 1fr;
   }
+  .grid-2.wide-left { grid-template-columns: 1.6fr 1fr; }
   .cell { padding: 20px 24px 24px; }
   .cell.br { border-right: 1px solid var(--border); }
   .row-top { border-top: 1px solid var(--border); }
@@ -299,6 +300,20 @@ TEMPLATE = Template(r"""<!DOCTYPE html>
 </div>
 <script>
 function _target() { return document.querySelector('.page'); }
+let _canvasCache = null;
+async function _getCanvas() {
+  if (_canvasCache) return _canvasCache;
+  await _waitFonts();
+  const el = _target();
+  _canvasCache = await html2canvas(el, {
+    scale: 3, useCORS: true, allowTaint: true,
+    backgroundColor: '#f5f3ef',
+    width: el.offsetWidth, height: el.offsetHeight,
+    windowWidth: el.offsetWidth, windowHeight: el.offsetHeight,
+    imageTimeout: 30000,
+  });
+  return _canvasCache;
+}
 function openInNewTab() {
   try {
     const html = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
@@ -318,14 +333,7 @@ async function _waitFonts() {
 }
 async function downloadPNG() {
   try {
-    await _waitFonts();
-    const el = _target();
-    const canvas = await html2canvas(el, {
-      scale: 2, useCORS: true, allowTaint: true,
-      backgroundColor: '#f5f3ef',
-      width: el.offsetWidth, height: el.offsetHeight,
-      windowWidth: el.offsetWidth, windowHeight: el.offsetHeight,
-    });
+    const canvas = await _getCanvas();
     const a = document.createElement('a');
     a.href = canvas.toDataURL('image/png');
     a.download = 'sketch_report_' + _stamp() + '.png';
@@ -337,15 +345,8 @@ async function downloadPNG() {
 }
 async function downloadPDF() {
   try {
-    await _waitFonts();
-    const el = _target();
-    const canvas = await html2canvas(el, {
-      scale: 2, useCORS: true, allowTaint: true,
-      backgroundColor: '#f5f3ef',
-      width: el.offsetWidth, height: el.offsetHeight,
-      windowWidth: el.offsetWidth, windowHeight: el.offsetHeight,
-    });
-    const imgData = canvas.toDataURL('image/jpeg', 0.95);
+    const canvas = await _getCanvas();
+    const imgData = canvas.toDataURL('image/jpeg', 0.98);
     const { jsPDF } = window.jspdf;
     const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
     const pageW = pdf.internal.pageSize.getWidth();
@@ -476,13 +477,13 @@ async function downloadPDF() {
   </div>
 
   <!-- LOOKBOOK + SUMMARY HEADER -->
-  <div class="grid-2 row-bt">
+  <div class="grid-2 wide-left row-bt">
     <div class="sec-head" style="border-right:1px solid var(--border);">Style Lookbook</div>
     <div class="sec-head right">Sketch Styling Summary</div>
   </div>
 
   <!-- LOOKBOOK + SUMMARY -->
-  <div class="grid-2 row-bt">
+  <div class="grid-2 wide-left row-bt">
     <div class="cell br">
       {% set slot_n = (lookbook_b64|length) or (looks|length) or 1 %}
       <div class="lookbook-photos" style="grid-template-columns: repeat({{ slot_n }}, 1fr);">
