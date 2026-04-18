@@ -111,7 +111,14 @@ def build_before_image_prompt(age: str, job: str, desired_keywords: str, extra_t
  • 평범한 일상 복장 (브랜딩 이전의 BEFORE 상태)
  • 과장되지 않은 현실적인 체형과 얼굴
  • 중립적이고 깔끔한 실내 또는 스튜디오 배경
- • 사실적이고 자연광, 고해상도"""
+ • 사실적이고 자연광, 고해상도
+
+복장 가이드 (반드시 준수):
+ • 상의는 속옷이 비치지 않는 충분히 두껍고 불투명한 소재
+ • 몸에 과도하게 밀착되지 않는 편안한 핏 (속옷 라인이 드러나지 않음)
+ • 단정하고 무난한 평상복 (티셔츠/셔츠/니트 + 바지 또는 긴 스커트)
+ • 노출이 적고 보수적인 실루엣
+ • 얇은 니트·블라우스 등 속옷 실루엣이 드러날 수 있는 아이템 금지"""
 
 
 def build_image_prompt(age: str, desired_keywords: str, look_index: int = 0) -> str:
