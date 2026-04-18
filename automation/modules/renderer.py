@@ -451,7 +451,7 @@ async function downloadPDF() {
         <div class="header-photo-ph">CLIENT PHOTO</div>
       {% endif %}
       {% if before_is_synthesized %}
-        <div class="header-photo-caption">* 예상 이미지 (텍스트 묘사 기반 생성)</div>
+        <div class="header-photo-caption">예상 이미지</div>
       {% endif %}
     </div>
   </div>
