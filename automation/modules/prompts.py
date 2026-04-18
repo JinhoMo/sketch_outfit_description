@@ -42,8 +42,17 @@ REPORT_SCHEMA_INSTRUCTION = """
     "ratio": "비율을 무너뜨리는 요소"
   },
   "colors": {
-    "recommended": ["컬러1", "컬러2", "컬러3", "컬러4"],
-    "avoid": ["컬러1", "컬러2", "컬러3"]
+    "recommended": [
+      {"name": "컬러1 한글명", "hex": "#RRGGBB"},
+      {"name": "컬러2 한글명", "hex": "#RRGGBB"},
+      {"name": "컬러3 한글명", "hex": "#RRGGBB"},
+      {"name": "컬러4 한글명", "hex": "#RRGGBB"}
+    ],
+    "avoid": [
+      {"name": "컬러1 한글명", "hex": "#RRGGBB"},
+      {"name": "컬러2 한글명", "hex": "#RRGGBB"},
+      {"name": "컬러3 한글명", "hex": "#RRGGBB"}
+    ]
   },
   "lookbook": [
     "LOOK 1 스타일링 해석 (1~2문장)",

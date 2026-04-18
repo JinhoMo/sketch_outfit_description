@@ -196,31 +196,58 @@ TEMPLATE = Template(r"""<!DOCTYPE html>
 
   /* palette */
   .color-sub {
-    font-size: 12px;
-    font-weight: 500;
+    font-family: 'Playfair Display', serif;
+    font-size: 13px;
+    font-weight: 700;
     color: var(--dark);
-    margin: 14px 0 8px;
-    letter-spacing: 0.3px;
+    margin: 16px 0 10px;
+    letter-spacing: 0.4px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
   }
   .color-sub:first-child { margin-top: 0; }
-  .palette-grid {
+  .swatch-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 2px 0;
+    gap: 10px 14px;
   }
-  .palette-item {
-    font-size: 12px;
-    color: var(--mid);
-    line-height: 2;
-    padding-left: 12px;
+  .swatch-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .swatch-chip {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 1px solid rgba(0,0,0,0.1);
+    box-shadow: inset 0 0 0 2px rgba(255,255,255,0.4);
+    flex-shrink: 0;
+  }
+  .swatch-chip.strike {
     position: relative;
+    opacity: 0.85;
   }
-  .palette-item::before {
-    content: '✦';
+  .swatch-chip.strike::after {
+    content: '';
     position: absolute;
-    left: 0;
+    left: -3px; right: -3px; top: 50%;
+    height: 1px;
+    background: var(--dark);
+    transform: rotate(-20deg);
+  }
+  .swatch-text { display: flex; flex-direction: column; line-height: 1.2; }
+  .swatch-name {
+    font-size: 12px;
     color: var(--dark);
-    font-size: 10px;
+    font-weight: 500;
+  }
+  .swatch-hex {
+    font-family: 'EB Garamond', serif;
+    font-size: 10.5px;
+    color: var(--light);
+    letter-spacing: 0.5px;
+    margin-top: 2px;
   }
 
   /* lookbook */
@@ -465,14 +492,34 @@ async function downloadPDF() {
       </div>
     </div>
     <div class="cell">
-      <div class="color-sub">Recommended palette</div>
-      <div class="palette-grid">
-        {% for c in data.colors.recommended %}<div class="palette-item">{{ c }}</div>{% endfor %}
+      <div class="color-sub">Recommended Palette</div>
+      <div class="swatch-grid">
+        {% for c in data.colors.recommended %}
+          {% set name = c.name if c is mapping else c %}
+          {% set hex = c.hex if c is mapping else '#c8c2b8' %}
+          <div class="swatch-item">
+            <div class="swatch-chip" style="background: {{ hex }};"></div>
+            <div class="swatch-text">
+              <div class="swatch-name">{{ name }}</div>
+              <div class="swatch-hex">{{ hex|upper }}</div>
+            </div>
+          </div>
+        {% endfor %}
       </div>
-      <div class="color-sub">Colors to avoid</div>
-      <ul class="rec-list">
-        {% for c in data.colors.avoid %}<li>{{ c }}</li>{% endfor %}
-      </ul>
+      <div class="color-sub">Colors to Avoid</div>
+      <div class="swatch-grid">
+        {% for c in data.colors.avoid %}
+          {% set name = c.name if c is mapping else c %}
+          {% set hex = c.hex if c is mapping else '#c8c2b8' %}
+          <div class="swatch-item">
+            <div class="swatch-chip strike" style="background: {{ hex }};"></div>
+            <div class="swatch-text">
+              <div class="swatch-name">{{ name }}</div>
+              <div class="swatch-hex">{{ hex|upper }}</div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
     </div>
   </div>
 
