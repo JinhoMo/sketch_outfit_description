@@ -388,9 +388,9 @@ async function downloadPDF() {
     const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
     const pageW = pdf.internal.pageSize.getWidth();
     const pageH = pdf.internal.pageSize.getHeight();
-    const margin = 6;
-    const imgW = pageW - margin * 2;
-    const usableH = pageH - margin * 2;
+    const margin = 0;
+    const imgW = pageW;
+    const usableH = pageH;
 
     const scale = canvas.width / el.offsetWidth;
     const pageCanvasH = Math.floor(canvas.width * (usableH / imgW));
