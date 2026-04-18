@@ -111,9 +111,18 @@ if run:
         st.error("외형 상세 텍스트를 입력해주세요.")
         st.stop()
 
+    def _downscale(img, max_side=1024):
+        if img is None:
+            return None
+        w, h = img.size
+        if max(w, h) <= max_side:
+            return img
+        scale = max_side / max(w, h)
+        return img.resize((int(w * scale), int(h * scale)), Image.LANCZOS)
+
     engine = GeminiEngine()
-    before_img = Image.open(before_file) if before_file else None
-    refs = [Image.open(f) for f in (ref_files or [])][:2]
+    before_img = _downscale(Image.open(before_file)) if before_file else None
+    refs = [_downscale(Image.open(f)) for f in (ref_files or [])][:2]
 
     with st.spinner("리포트 텍스트 생성 중..."):
         try:
