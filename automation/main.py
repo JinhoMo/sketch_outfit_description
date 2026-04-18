@@ -250,7 +250,7 @@ if "html" in st.session_state:
         lb_cols = st.columns(n_slots)
         for i in range(n_slots):
             with lb_cols[i]:
-                if i < len(existing_lb):
+                if i < len(existing_lb) and existing_lb[i] is not None:
                     st.image(existing_lb[i], caption=f"LOOK {i+1}", width="stretch")
                 else:
                     st.markdown(f"LOOK {i+1} (없음)")
