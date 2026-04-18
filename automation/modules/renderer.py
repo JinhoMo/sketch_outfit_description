@@ -47,7 +47,7 @@ TEMPLATE = Template(r"""<!DOCTYPE html>
   /* HEADER */
   .header {
     display: grid;
-    grid-template-columns: 1fr 240px;
+    grid-template-columns: 1fr 200px;
     gap: 28px;
     margin-bottom: 24px;
     align-items: start;
@@ -76,10 +76,10 @@ TEMPLATE = Template(r"""<!DOCTYPE html>
     margin-top: 6px;
     letter-spacing: 1.8px;
   }
-  .header-photo-wrap { display: flex; flex-direction: column; }
+  .header-photo-wrap { display: flex; flex-direction: column; width: 200px; max-width: 100%; }
   .header-photo, .header-photo-ph {
     width: 100%;
-    aspect-ratio: 3/4;
+    aspect-ratio: 2/3;
     object-fit: cover;
     object-position: top center;
     display: block;
