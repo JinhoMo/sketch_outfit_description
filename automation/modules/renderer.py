@@ -373,24 +373,50 @@ async function downloadPNG() {
 async function downloadPDF() {
   try {
     const canvas = await _getCanvas();
-    const imgData = canvas.toDataURL('image/jpeg', 0.98);
+    const el = _target();
     const { jsPDF } = window.jspdf;
     const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
     const pageW = pdf.internal.pageSize.getWidth();
     const pageH = pdf.internal.pageSize.getHeight();
     const margin = 6;
     const imgW = pageW - margin * 2;
-    const imgH = canvas.height * imgW / canvas.width;
     const usableH = pageH - margin * 2;
-    let heightLeft = imgH;
-    let position = margin;
-    pdf.addImage(imgData, 'JPEG', margin, position, imgW, imgH);
-    heightLeft -= usableH;
-    while (heightLeft > 0) {
-      position = margin - (imgH - heightLeft);
-      pdf.addPage();
-      pdf.addImage(imgData, 'JPEG', margin, position, imgW, imgH);
-      heightLeft -= usableH;
+
+    const scale = canvas.width / el.offsetWidth;
+    const pageCanvasH = Math.floor(canvas.width * (usableH / imgW));
+
+    const elTop = el.getBoundingClientRect().top;
+    const blocks = Array.from(el.querySelectorAll('.header, .grid-2, .footer'));
+    const boundaries = [0];
+    for (const b of blocks) {
+      const rect = b.getBoundingClientRect();
+      boundaries.push(Math.round((rect.bottom - elTop) * scale));
+    }
+    boundaries.push(canvas.height);
+    const uniq = Array.from(new Set(boundaries)).sort((a, b) => a - b);
+
+    let start = 0;
+    while (start < canvas.height) {
+      const maxEnd = start + pageCanvasH;
+      let end = canvas.height;
+      for (let i = uniq.length - 1; i >= 0; i--) {
+        if (uniq[i] > start && uniq[i] <= maxEnd) { end = uniq[i]; break; }
+      }
+      if (end === canvas.height && end - start > pageCanvasH) end = start + pageCanvasH;
+
+      const sliceH = end - start;
+      const tmp = document.createElement('canvas');
+      tmp.width = canvas.width;
+      tmp.height = sliceH;
+      const ctx = tmp.getContext('2d');
+      ctx.fillStyle = '#f5f3ef';
+      ctx.fillRect(0, 0, tmp.width, tmp.height);
+      ctx.drawImage(canvas, 0, start, canvas.width, sliceH, 0, 0, canvas.width, sliceH);
+      const sliceData = tmp.toDataURL('image/jpeg', 0.98);
+      const sliceMm = sliceH * imgW / canvas.width;
+      if (start > 0) pdf.addPage();
+      pdf.addImage(sliceData, 'JPEG', margin, margin, imgW, sliceMm);
+      start = end;
     }
     pdf.save('sketch_report_' + _stamp() + '.pdf');
   } catch (e) {
