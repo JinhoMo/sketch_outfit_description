@@ -347,7 +347,25 @@ async function _getCanvas() {
     backgroundColor: '#f5f3ef',
     width: el.offsetWidth, height: el.offsetHeight,
     windowWidth: el.offsetWidth, windowHeight: el.offsetHeight,
+    x: 0, y: 0,
+    scrollX: 0, scrollY: 0,
     imageTimeout: 30000,
+    onclone: (doc) => {
+      const b = doc.body;
+      if (b) {
+        b.style.padding = '0';
+        b.style.margin = '0';
+        b.style.display = 'block';
+        b.style.background = '#f5f3ef';
+      }
+      const p = doc.querySelector('.page');
+      if (p) {
+        p.style.margin = '0';
+        p.style.boxShadow = 'none';
+      }
+      const bar = doc.querySelector('.dl-bar');
+      if (bar) bar.style.display = 'none';
+    },
   });
   return _canvasCache;
 }
