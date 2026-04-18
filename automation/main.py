@@ -157,14 +157,14 @@ if run:
 
     lookbook = [None] * n_looks
     if before_img is not None:
-        with st.spinner(f"룩북 이미지 {n_looks}장 병렬 생성 중..."):
+        with st.spinner(f"룩북 이미지 {n_looks}장 순차 생성 중..."):
             ts = datetime.now().strftime("%Y%m%d_%H%M%S")
 
             def _gen(i):
                 out = GEN_DIR / f"look_{ts}_{i+1}.png"
                 return i, engine.generate_styling_image(age, goal, before_img, out, look_index=i)
 
-            with ThreadPoolExecutor(max_workers=2) as ex:
+            with ThreadPoolExecutor(max_workers=1) as ex:
                 for fut in [ex.submit(_gen, i) for i in range(n_looks)]:
                     try:
                         idx, path = fut.result()
