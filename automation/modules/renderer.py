@@ -39,31 +39,31 @@ TEMPLATE = Template(r"""<!DOCTYPE html>
 
   .page {
     background: var(--bg);
-    width: 900px;
-    padding: 48px 52px 40px;
+    width: 794px;
+    padding: 40px 44px 36px;
     box-shadow: 0 4px 32px rgba(0,0,0,0.12);
   }
 
   /* HEADER */
   .header {
     display: grid;
-    grid-template-columns: 1fr 280px;
-    gap: 32px;
-    margin-bottom: 28px;
+    grid-template-columns: 1fr 240px;
+    gap: 28px;
+    margin-bottom: 24px;
     align-items: start;
   }
   .brand {
     font-family: 'Playfair Display', serif;
-    font-size: 80px;
+    font-size: 68px;
     font-weight: 900;
-    letter-spacing: -2px;
+    letter-spacing: -1.5px;
     line-height: 1;
     color: var(--dark);
   }
   .tagline {
     font-family: 'Playfair Display', serif;
     font-style: italic;
-    font-size: 26px;
+    font-size: 22px;
     font-weight: 700;
     color: var(--dark);
     margin-top: 4px;
@@ -71,10 +71,10 @@ TEMPLATE = Template(r"""<!DOCTYPE html>
   }
   .subtitle {
     font-family: 'EB Garamond', serif;
-    font-size: 17px;
+    font-size: 15px;
     color: var(--mid);
     margin-top: 6px;
-    letter-spacing: 2px;
+    letter-spacing: 1.8px;
   }
   .header-photo-wrap { display: flex; flex-direction: column; }
   .header-photo, .header-photo-ph {
