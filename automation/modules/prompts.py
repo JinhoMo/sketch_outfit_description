@@ -97,9 +97,14 @@ def build_before_image_prompt(age: str, job: str, desired_keywords: str, extra_t
     return f"""아래 외형 묘사를 기반으로 실제 인물 전신 사진을 생성한다.
 
 [인물 정보]
-- 나이: {age}
+- 나이: 정확히 {age}살 (반드시 이 나이로 보여야 함 — 더 어리거나 나이 들어 보이면 안 됨)
 - 직업: {job}
 - 추구 이미지(참고용): {desired_keywords}
+
+⚠️ 나이 표현 매우 중요:
+ • 얼굴 피부는 {age}살에 맞는 매끈함과 생기
+ • 메이크업·헤어스타일·옷차림 모두 {age}살 또래의 자연스러운 룩
+ • 절대 실제 나이보다 들어 보이지 않도록 주의
 
 [외형 묘사]
 {extra_text}
@@ -127,9 +132,10 @@ def build_image_prompt(age: str, desired_keywords: str, look_index: int = 0) -> 
 인물의 정체성과 자연스러운 비율을 절대 변경하지 않는다.
 
 아래 고객 정보를 기반으로 스타일을 재구성한다.
-나이: {age}
+나이: 정확히 {age}살 (이 나이로 보이도록 유지 — 더 나이 들어 보이면 안 됨)
 추구 이미지: {desired_keywords}
 
+⚠️ {age}살 또래에 어울리는 스타일·메이크업·헤어로 설계.
 해당 나이와 라이프스타일에 맞는 현실적이고 세련된 스타일을 구현한다.
 단순한 옷 변경이 아니라 이미지 브랜딩 관점에서 스타일링한다.
 

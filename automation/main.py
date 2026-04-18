@@ -135,6 +135,11 @@ if run:
             st.exception(e)
             st.stop()
 
+    data.setdefault("client_info", {})
+    data["client_info"]["age"] = age
+    data["client_info"]["job"] = job
+    data["client_info"]["goal_image"] = goal
+
     before_is_synth = False
     if before_img is None and extra_text.strip():
         with st.spinner("외형 묘사 기반 BEFORE 이미지 생성 중..."):
