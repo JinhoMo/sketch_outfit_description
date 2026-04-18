@@ -109,7 +109,7 @@ TEMPLATE = Template(r"""<!DOCTYPE html>
     grid-template-columns: 1fr 1fr;
   }
   .grid-2.wide-left { grid-template-columns: 1.6fr 1fr; }
-  .cell { padding: 20px 24px 24px; }
+  .cell { padding: 16px 20px 20px; }
   .cell.br { border-right: 1px solid var(--border); }
   .row-top { border-top: 1px solid var(--border); }
   .row-bt { border-bottom: 1px solid var(--border); }
@@ -117,10 +117,10 @@ TEMPLATE = Template(r"""<!DOCTYPE html>
   /* SECTION HEADINGS */
   .sec-head {
     font-family: 'Playfair Display', serif;
-    font-size: 22px;
+    font-size: 19px;
     font-weight: 700;
     color: var(--dark);
-    padding: 16px 24px;
+    padding: 14px 20px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -128,24 +128,24 @@ TEMPLATE = Template(r"""<!DOCTYPE html>
   .sec-head.right { text-align: right; }
   .section-heading {
     font-family: 'Playfair Display', serif;
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 700;
     color: var(--dark);
-    margin-bottom: 14px;
+    margin-bottom: 12px;
     letter-spacing: 0.3px;
   }
   .col-title {
     font-family: 'Playfair Display', serif;
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 700;
     color: var(--dark);
-    margin-bottom: 14px;
+    margin-bottom: 12px;
   }
 
   .info-row {
-    font-size: 13px;
+    font-size: 12px;
     color: var(--mid);
-    line-height: 2;
+    line-height: 1.95;
   }
   .info-row span {
     color: var(--dark);
@@ -154,22 +154,22 @@ TEMPLATE = Template(r"""<!DOCTYPE html>
 
   /* check + bullets */
   .check {
-    font-size: 12.5px;
+    font-size: 11.5px;
     font-weight: 500;
     color: var(--dark);
-    margin-bottom: 6px;
+    margin-bottom: 5px;
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 5px;
   }
-  .check::before { content: '✓'; font-size: 12px; color: var(--dark); }
+  .check::before { content: '✓'; font-size: 11px; color: var(--dark); }
 
-  .bullets { list-style: none; padding: 0; margin-bottom: 12px; }
+  .bullets { list-style: none; padding: 0; margin-bottom: 10px; }
   .bullets li {
-    font-size: 12px;
+    font-size: 11px;
     color: var(--mid);
-    line-height: 1.9;
-    padding-left: 10px;
+    line-height: 1.8;
+    padding-left: 9px;
     position: relative;
   }
   .bullets li::before {
@@ -185,10 +185,10 @@ TEMPLATE = Template(r"""<!DOCTYPE html>
 
   .rec-list { list-style: none; padding: 0; }
   .rec-list li {
-    font-size: 12.5px;
+    font-size: 11.5px;
     color: var(--mid);
-    line-height: 2;
-    padding-left: 12px;
+    line-height: 1.9;
+    padding-left: 11px;
     position: relative;
   }
   .rec-list li::before {
@@ -284,27 +284,27 @@ TEMPLATE = Template(r"""<!DOCTYPE html>
     color: #888;
     letter-spacing: 0.5px;
   }
-  .look-caption { font-size: 12px; color: var(--mid); line-height: 1.8; margin-top: 8px; margin-bottom: 10px; word-break: keep-all; overflow-wrap: anywhere; }
-  .look-caption b { color: var(--dark); font-weight: 600; margin-right: 4px; font-family: 'Playfair Display', serif; font-size: 13px; }
+  .look-caption { font-size: 11px; color: var(--mid); line-height: 1.75; margin-top: 7px; margin-bottom: 9px; word-break: keep-all; overflow-wrap: anywhere; }
+  .look-caption b { color: var(--dark); font-weight: 600; margin-right: 4px; font-family: 'Playfair Display', serif; font-size: 12px; }
 
   /* summary */
   .summary-heading {
     font-family: 'Playfair Display', serif;
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 700;
     color: var(--dark);
-    margin-bottom: 10px;
+    margin-bottom: 9px;
   }
-  .summary-text { font-size: 12.5px; color: var(--mid); line-height: 2; word-break: keep-all; overflow-wrap: anywhere; }
+  .summary-text { font-size: 11.5px; color: var(--mid); line-height: 1.9; word-break: keep-all; overflow-wrap: anywhere; }
   .info-row, .bullets li, .rec-list li, .palette-item { word-break: keep-all; overflow-wrap: anywhere; }
   .summary-text strong { color: var(--dark); font-weight: 500; }
 
   /* footer */
   .footer {
-    padding-top: 18px;
+    padding-top: 16px;
     font-family: 'EB Garamond', serif;
     font-style: italic;
-    font-size: 15px;
+    font-size: 14px;
     color: var(--mid);
     line-height: 1.7;
   }
