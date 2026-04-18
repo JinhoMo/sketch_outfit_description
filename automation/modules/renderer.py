@@ -641,6 +641,8 @@ def render_html(data: dict,
     else:
         looks = []
     images_b64 = [_img_to_b64(i) for i in (lookbook_images or []) if i is not None]
+    if images_b64 and len(looks) > len(images_b64):
+        looks = looks[:len(images_b64)]
     return TEMPLATE.render(
         data=data,
         before_image_b64=_img_to_b64(before_image),
