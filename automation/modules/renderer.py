@@ -76,12 +76,22 @@ TEMPLATE = Template(r"""<!DOCTYPE html>
     margin-top: 6px;
     letter-spacing: 2px;
   }
+  .header-photo-wrap { display: flex; flex-direction: column; }
   .header-photo, .header-photo-ph {
     width: 100%;
     aspect-ratio: 3/4;
     object-fit: cover;
     object-position: top center;
     display: block;
+  }
+  .header-photo-caption {
+    font-family: 'EB Garamond', serif;
+    font-size: 11px;
+    font-style: italic;
+    color: var(--light);
+    margin-top: 6px;
+    text-align: center;
+    letter-spacing: 0.3px;
   }
   .header-photo-ph {
     background: linear-gradient(135deg, #d0ccc6 0%, #b8b2aa 100%);
@@ -434,11 +444,16 @@ async function downloadPDF() {
       <div class="tagline">Identity on the Street</div>
       <div class="subtitle">Identity Consulting Report</div>
     </div>
-    {% if before_image_b64 %}
-      <img class="header-photo" src="data:image/png;base64,{{ before_image_b64 }}">
-    {% else %}
-      <div class="header-photo-ph">CLIENT PHOTO</div>
-    {% endif %}
+    <div class="header-photo-wrap">
+      {% if before_image_b64 %}
+        <img class="header-photo" src="data:image/png;base64,{{ before_image_b64 }}">
+      {% else %}
+        <div class="header-photo-ph">CLIENT PHOTO</div>
+      {% endif %}
+      {% if before_is_synthesized %}
+        <div class="header-photo-caption">* 예상 이미지 (텍스트 묘사 기반 생성)</div>
+      {% endif %}
+    </div>
   </div>
 
   <!-- CLIENT + BEFORE -->
@@ -598,7 +613,8 @@ def _img_to_b64(img: Optional[Image.Image]) -> Optional[str]:
 
 def render_html(data: dict,
                 before_image: Optional[Image.Image] = None,
-                lookbook_images: Optional[List[Image.Image]] = None) -> str:
+                lookbook_images: Optional[List[Image.Image]] = None,
+                before_is_synthesized: bool = False) -> str:
     raw = data.get("lookbook")
     if isinstance(raw, list):
         looks = [s for s in raw if s]
@@ -612,4 +628,5 @@ def render_html(data: dict,
         before_image_b64=_img_to_b64(before_image),
         lookbook_b64=images_b64,
         looks=looks,
+        before_is_synthesized=before_is_synthesized,
     )

@@ -135,6 +135,7 @@ if run:
             st.exception(e)
             st.stop()
 
+    before_is_synth = False
     if before_img is None and extra_text.strip():
         with st.spinner("외형 묘사 기반 BEFORE 이미지 생성 중..."):
             try:
@@ -143,6 +144,7 @@ if run:
                 p = engine.generate_before_image(age, job, goal, extra_text, before_path)
                 if p:
                     before_img = _downscale(Image.open(p))
+                    before_is_synth = True
             except Exception as e:
                 logger.exception("before image generation failed")
                 st.warning(f"BEFORE 이미지 생성 실패: {e}")
@@ -167,7 +169,9 @@ if run:
                         st.warning(f"룩북 생성 실패: {e}")
         lookbook = [img for img in lookbook if img is not None]
 
-    html = render_html(data, before_image=before_img, lookbook_images=lookbook)
+    html = render_html(data, before_image=before_img, lookbook_images=lookbook,
+                       before_is_synthesized=before_is_synth)
+    st.session_state["before_is_synth"] = before_is_synth
     if st.session_state.get("html") != html:
         st.session_state.pop("png_bytes", None)
         st.session_state.pop("pdf_bytes", None)
@@ -289,7 +293,8 @@ if "html" in st.session_state:
                                     lb2[i] = Image.open(path)
                                     st.session_state["lookbook"] = [x for x in lb2 if x is not None]
                                     new_html = render_html(data, before_image=bf,
-                                                           lookbook_images=st.session_state["lookbook"])
+                                                           lookbook_images=st.session_state["lookbook"],
+                                                           before_is_synthesized=st.session_state.get("before_is_synth", False))
                                     st.session_state["html"] = new_html
                                     st.session_state.pop("png_bytes", None)
                                     st.session_state.pop("pdf_bytes", None)
@@ -301,8 +306,11 @@ if "html" in st.session_state:
         if st.button("수정 적용", type="primary", key="apply_edit"):
             new_data = {**data, **edited}
             before_img2 = Image.open(new_before) if new_before else st.session_state.get("before_img")
+            synth_flag = st.session_state.get("before_is_synth", False) and not new_before
             new_html = render_html(new_data, before_image=before_img2,
-                                   lookbook_images=st.session_state.get("lookbook") or [])
+                                   lookbook_images=st.session_state.get("lookbook") or [],
+                                   before_is_synthesized=synth_flag)
+            st.session_state["before_is_synth"] = synth_flag
             st.session_state["html"] = new_html
             st.session_state["data"] = new_data
             st.session_state["before_img"] = before_img2

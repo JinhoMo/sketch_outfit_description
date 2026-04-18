@@ -19,6 +19,17 @@ load_dotenv(override=True)
 
 logger = logging.getLogger("sketch.ai_engine")
 
+
+def _center_crop_portrait(img: Image.Image, target_ratio: float = 2 / 3) -> Image.Image:
+    """Crop to portrait aspect (w/h) around center to reduce side background."""
+    w, h = img.size
+    cur = w / h
+    if cur <= target_ratio:
+        return img
+    new_w = int(h * target_ratio)
+    left = (w - new_w) // 2
+    return img.crop((left, 0, left + new_w, h))
+
 TEXT_MODELS = ["gemini-3-flash-preview", "gemini-3.1-pro-preview", "gemini-2.5-flash", "gemini-2.5-pro"]
 IMAGE_MODEL = "gemini-3.1-flash-image-preview"
 
@@ -92,6 +103,7 @@ class GeminiEngine:
                 for part in response.candidates[0].content.parts:
                     if getattr(part, "inline_data", None) and part.inline_data.data:
                         img = Image.open(BytesIO(part.inline_data.data))
+                        img = _center_crop_portrait(img, target_ratio=2 / 3)
                         out_path.parent.mkdir(parents=True, exist_ok=True)
                         img.save(out_path)
                         logger.info("before image saved %s in %.2fs (attempt=%d)",
@@ -131,6 +143,7 @@ class GeminiEngine:
                 for part in response.candidates[0].content.parts:
                     if getattr(part, "inline_data", None) and part.inline_data.data:
                         img = Image.open(BytesIO(part.inline_data.data))
+                        img = _center_crop_portrait(img, target_ratio=2 / 3)
                         out_path.parent.mkdir(parents=True, exist_ok=True)
                         img.save(out_path)
                         logger.info("image saved %s in %.2fs (attempt=%d)",
