@@ -200,11 +200,34 @@ if "html" in st.session_state:
             for k, lbl in [("fit", "핏"), ("color", "컬러"),
                            ("mood", "무드"), ("ratio", "비율 붕괴")]:
                 edited["avoid"][k] = st.text_area(lbl, data["avoid"].get(k, ""), key=f"av_{k}", height=70)
-            st.markdown("**Colors**")
-            rec_txt = st.text_input("추천 (콤마 구분)", ", ".join(data["colors"].get("recommended", [])), key="col_rec")
-            avo_txt = st.text_input("피할 색 (콤마 구분)", ", ".join(data["colors"].get("avoid", [])), key="col_avo")
-            edited["colors"]["recommended"] = [x.strip() for x in rec_txt.split(",") if x.strip()]
-            edited["colors"]["avoid"] = [x.strip() for x in avo_txt.split(",") if x.strip()]
+            st.markdown("**Colors** (형식: `이름 #HEX`, 콤마로 구분)")
+
+            def _fmt_colors(items):
+                out = []
+                for c in items or []:
+                    if isinstance(c, dict):
+                        out.append(f"{c.get('name','')} {c.get('hex','')}".strip())
+                    else:
+                        out.append(str(c))
+                return ", ".join(out)
+
+            def _parse_colors(txt):
+                result = []
+                for raw in txt.split(","):
+                    raw = raw.strip()
+                    if not raw:
+                        continue
+                    parts = raw.rsplit(" ", 1)
+                    if len(parts) == 2 and parts[1].startswith("#"):
+                        result.append({"name": parts[0].strip(), "hex": parts[1].strip()})
+                    else:
+                        result.append({"name": raw, "hex": "#c8c2b8"})
+                return result
+
+            rec_txt = st.text_input("추천", _fmt_colors(data["colors"].get("recommended", [])), key="col_rec")
+            avo_txt = st.text_input("피할 색", _fmt_colors(data["colors"].get("avoid", [])), key="col_avo")
+            edited["colors"]["recommended"] = _parse_colors(rec_txt)
+            edited["colors"]["avoid"] = _parse_colors(avo_txt)
             st.markdown("**Lookbook Descriptions**")
             raw_looks = data.get("lookbook") if isinstance(data.get("lookbook"), list) else []
             edited_looks = []
