@@ -130,10 +130,10 @@ class GeminiEngine:
         t0 = time.time()
         logger.info("generate_styling_image -> %s", out_path.name)
         cfg = types.GenerateContentConfig(
-            http_options=types.HttpOptions(timeout=90_000),  # ms
+            http_options=types.HttpOptions(timeout=60_000),  # ms — fail fast + retry
         )
         last_err = None
-        for attempt in range(2):
+        for attempt in range(3):
             try:
                 response = self.client.models.generate_content(
                     model=IMAGE_MODEL,

@@ -158,7 +158,7 @@ if run:
                 out = GEN_DIR / f"look_{ts}_{i+1}.png"
                 return i, engine.generate_styling_image(age, goal, before_img, out, look_index=i)
 
-            with ThreadPoolExecutor(max_workers=n_looks) as ex:
+            with ThreadPoolExecutor(max_workers=2) as ex:
                 for fut in [ex.submit(_gen, i) for i in range(n_looks)]:
                     try:
                         idx, path = fut.result()
