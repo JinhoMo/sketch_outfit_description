@@ -93,6 +93,25 @@ LOOK_VARIATIONS = [
 ]
 
 
+def build_before_image_prompt(age: str, job: str, desired_keywords: str, extra_text: str) -> str:
+    return f"""아래 외형 묘사를 기반으로 실제 인물 전신 사진을 생성한다.
+
+[인물 정보]
+- 나이: {age}
+- 직업: {job}
+- 추구 이미지(참고용): {desired_keywords}
+
+[외형 묘사]
+{extra_text}
+
+요구사항:
+ • 전신이 보이는 자연스러운 서 있는 포즈
+ • 평범한 일상 복장 (브랜딩 이전의 BEFORE 상태)
+ • 과장되지 않은 현실적인 체형과 얼굴
+ • 중립적이고 깔끔한 실내 또는 스튜디오 배경
+ • 사실적이고 자연광, 고해상도"""
+
+
 def build_image_prompt(age: str, desired_keywords: str, look_index: int = 0) -> str:
     variation = LOOK_VARIATIONS[look_index % len(LOOK_VARIATIONS)]
     return f"""원본 이미지를 기반으로 얼굴, 체형, 키, 분위기를 그대로 유지한다.

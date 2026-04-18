@@ -13,7 +13,7 @@ from google import genai
 from google.genai import types
 from PIL import Image
 
-from .prompts import build_image_prompt, build_text_report_prompt
+from .prompts import build_before_image_prompt, build_image_prompt, build_text_report_prompt
 
 load_dotenv(override=True)
 
@@ -71,6 +71,38 @@ class GeminiEngine:
                     logger.warning("%s failed (%.2fs): %s", model, time.time() - t0, e)
                     time.sleep(2 ** attempt)
         logger.error("all text model attempts failed")
+        raise last_err
+
+    def generate_before_image(self, age: str, job: str, desired_keywords: str,
+                              extra_text: str, out_path: Path) -> Optional[Path]:
+        prompt = build_before_image_prompt(age, job, desired_keywords, extra_text)
+        t0 = time.time()
+        logger.info("generate_before_image -> %s", out_path.name)
+        cfg = types.GenerateContentConfig(
+            http_options=types.HttpOptions(timeout=90_000),
+        )
+        last_err = None
+        for attempt in range(2):
+            try:
+                response = self.client.models.generate_content(
+                    model=IMAGE_MODEL,
+                    contents=[prompt],
+                    config=cfg,
+                )
+                for part in response.candidates[0].content.parts:
+                    if getattr(part, "inline_data", None) and part.inline_data.data:
+                        img = Image.open(BytesIO(part.inline_data.data))
+                        out_path.parent.mkdir(parents=True, exist_ok=True)
+                        img.save(out_path)
+                        logger.info("before image saved %s in %.2fs (attempt=%d)",
+                                    out_path, time.time() - t0, attempt + 1)
+                        return out_path
+                logger.warning("no before image returned (attempt=%d)", attempt + 1)
+                return None
+            except Exception as e:
+                last_err = e
+                logger.warning("before image attempt %d failed (%.1fs): %s",
+                               attempt + 1, time.time() - t0, e)
         raise last_err
 
     def generate_styling_image(self, age: str, desired_keywords: str,

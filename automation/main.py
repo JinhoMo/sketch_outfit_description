@@ -135,6 +135,18 @@ if run:
             st.exception(e)
             st.stop()
 
+    if before_img is None and extra_text.strip():
+        with st.spinner("외형 묘사 기반 BEFORE 이미지 생성 중..."):
+            try:
+                ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+                before_path = GEN_DIR / f"before_{ts}.png"
+                p = engine.generate_before_image(age, job, goal, extra_text, before_path)
+                if p:
+                    before_img = _downscale(Image.open(p))
+            except Exception as e:
+                logger.exception("before image generation failed")
+                st.warning(f"BEFORE 이미지 생성 실패: {e}")
+
     lookbook = [None] * n_looks
     if before_img is not None:
         with st.spinner(f"룩북 이미지 {n_looks}장 병렬 생성 중..."):
