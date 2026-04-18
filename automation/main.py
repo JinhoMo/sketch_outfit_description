@@ -3,6 +3,7 @@ import logging
 import sys
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
+from io import BytesIO
 from pathlib import Path
 
 import streamlit as st
@@ -336,4 +337,34 @@ if "html" in st.session_state:
                        file_name=f"sketch_report_{stamp}.html",
                        mime="text/html",
                        key="html_dl")
+
+    def _img_bytes(img):
+        buf = BytesIO()
+        img.convert("RGB").save(buf, format="PNG")
+        return buf.getvalue()
+
+    before_img_state = st.session_state.get("before_img")
+    lookbook_state = st.session_state.get("lookbook") or []
+    has_any = before_img_state is not None or any(lookbook_state)
+    if has_any:
+        st.markdown("**개별 이미지 저장**")
+        cols = st.columns(1 + len(lookbook_state))
+        if before_img_state is not None:
+            with cols[0]:
+                st.image(before_img_state, caption="BEFORE", width="stretch")
+                st.download_button("BEFORE 저장",
+                                   data=_img_bytes(before_img_state),
+                                   file_name=f"before_{stamp}.png",
+                                   mime="image/png",
+                                   key="before_dl")
+        for i, img in enumerate(lookbook_state):
+            if img is None:
+                continue
+            with cols[1 + i]:
+                st.image(img, caption=f"LOOK {i+1}", width="stretch")
+                st.download_button(f"LOOK {i+1} 저장",
+                                   data=_img_bytes(img),
+                                   file_name=f"look_{i+1}_{stamp}.png",
+                                   mime="image/png",
+                                   key=f"look_dl_{i}")
     st.caption("📷 PNG / 📄 PDF 저장: 위 미리보기 우측 상단 버튼 사용. 잘림이 있으면 HTML을 다운로드해 브라우저에서 직접 열어 저장하세요.")
