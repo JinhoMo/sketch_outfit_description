@@ -173,7 +173,11 @@ if run:
                     except Exception as e:
                         logger.exception("lookbook generation failed")
                         st.warning(f"룩북 생성 실패: {e}")
-        lookbook = [img for img in lookbook if img is not None]
+        successful_idx = [i for i, img in enumerate(lookbook) if img is not None]
+        lookbook = [lookbook[i] for i in successful_idx]
+        if isinstance(data.get("lookbook"), list):
+            src_looks = data["lookbook"]
+            data["lookbook"] = [src_looks[i] for i in successful_idx if i < len(src_looks)]
 
     html = render_html(data, before_image=before_img, lookbook_images=lookbook,
                        before_is_synthesized=before_is_synth)
